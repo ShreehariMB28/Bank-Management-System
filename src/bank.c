@@ -7,10 +7,10 @@ void create_account() {
     printf("Enter Account Number: ");
     scanf("%d", &new_acc.account_number);
     printf("Enter Username: ");
-    scanf("%s", &new_acc.username);
+    scanf("%s", new_acc.username);
     printf("Enter Password: ");
-    scanf("%s", &new_acc.password);
-    new_acc.balance = 0.0;
+    scanf("%s", new_acc.password);
+    new_acc.balance = 0;
 
     fwrite(&new_acc, sizeof(struct Account), 1, file); // Write struct to file
     fclose(file);
@@ -28,8 +28,8 @@ void login() {
         return;
     }
 
-    printf("Username: "); scanf("%s", &input_user);
-    printf("Password: "); scanf("%s", &input_pass);
+    printf("Username: "); scanf("%s", input_user);
+    printf("Password: "); scanf("%s", input_pass);
 
     while (fread(&acc, sizeof(struct Account), 1, file)) {
         if ((strcmp(acc.username, input_user) == 0) && (strcmp(acc.password, input_pass) == 0)) {
