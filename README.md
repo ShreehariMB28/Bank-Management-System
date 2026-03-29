@@ -116,3 +116,4 @@ This removes the executable from `bin/`.
 
 - This is a learning-focused console project and does not include encryption/hashing for passwords.
 - Input handling is basic and assumes valid user input types.
+- This project is actively evolving, and more features and improvements will be added over time.
