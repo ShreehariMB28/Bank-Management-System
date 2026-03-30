@@ -252,7 +252,24 @@ void save_exit() {
 }
 
 
+void display_all_accounts(){
+    if (head == NULL) {
+        printf("No accounts found in the bank.\n");
+        return;
+    }
 
+    // Call the sorting algorithm to sort the list by balance first
+    merge_sort(&head);
+
+    struct Node* current = head;
+    printf("\n--- All Bank Accounts (Sorted by Balance) ---\n");
+    while (current!= NULL) {
+        printf("Account: %d | User: %s | Balance: Rs.%d\n", 
+               current->data.account_number, current->data.username, current->data.balance);
+        current = current->next;
+    }
+    printf("---------------------------------------------\n");
+}
 
 
 

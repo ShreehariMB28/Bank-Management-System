@@ -26,4 +26,5 @@ void save_exit();
 void merge_sort(struct Node** headRef);
 void split_list(struct Node* source, struct Node** frontRef, struct Node** backRef);
 struct Node* sorted_merge(struct Node* a, struct Node* b);
+void display_all_accounts();
 #endif
