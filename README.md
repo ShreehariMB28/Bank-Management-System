@@ -1,62 +1,74 @@
-# Bank Management System (C)
+# Bank Management System in C
 
-A console-based banking application written in C with modular source/header files and binary file persistence.
+A console-based bank management application built in C using modular files, linked-list storage in memory, and binary file persistence on disk.
 
 ## Overview
 
-This project demonstrates core systems programming concepts:
+This project manages bank accounts with a simple menu-driven interface. Account data is loaded from a binary file at startup, stored in a linked list during runtime, and written back to disk when exiting.
 
-- Structured program design with separate source and header files
-- Persistent storage using binary file I/O
-- Basic user authentication using username/password checks
-- Record updates inside a binary database file
+## Features
 
-The application stores account data in `bank_data.dat` and provides a simple menu for account operations.
-
-## Current Features
-
-- Create a new bank account
-- Login with username and password
-- Verify account credentials before balance update
+- Create new account with unique account number validation
+- Login/check balance using username and password
+- Verify user credentials before allowing balance update
 - Deposit money into an account
-- Persist account records to disk in binary format
+- Display all accounts sorted by balance (ascending)
+- Persistent storage using a binary data file (`bank_data.dat`)
 
 ## Project Structure
 
 ```text
 bank-system/
-├── Makefile
-├── README.md
-├── bin/
-├── build/
-├── include/
-│   └── bank.h
-└── src/
-	├── bank.c
-	└── main.c
+|-- Makefile
+|-- README.md
+|-- .gitignore
+|-- include/
+|   `-- bank.h
+|-- src/
+|   |-- main.c
+|   `-- bank.c
+|-- bin/
+`-- build/
 ```
 
-## Data Model
+## Tech Details
 
-Each account is stored using this C structure:
+- Language: C
+- Build tool: Make + GCC
+- Data structure: Singly linked list (`struct Node`)
+- Persistence: Binary file read/write with `fread` and `fwrite`
+
+## Account Model
 
 ```c
 struct Account {
-	int account_number;
-	char username[50];
-	char password[50];
-	int balance;
+    int account_number;
+    char username[50];
+    char password[50];
+    int balance;
 };
 ```
 
-Records are written directly to `bank_data.dat` using `fwrite`, and read using `fread`.
+## Menu Options
+
+When you run the app, the menu is:
+
+1. Create Account
+2. Check Balance
+3. Update Balance
+4. Display All Accounts
+5. Exit
+
+## Data File
+
+- `bank_data.dat` is created in the project root.
+- `load_data()` reads all saved accounts into memory at startup.
+- `save_exit()` writes accounts to disk and frees allocated linked-list memory before exiting.
 
 ## Prerequisites
 
-- GCC compiler
-- Make utility
-
-On Windows, this usually means using MinGW/MSYS2 or Git Bash with `gcc` and `make` available in PATH.
+- GCC (MinGW/MSYS2 on Windows, or GCC on Linux/macOS)
+- Make
 
 ## Build
 
@@ -66,54 +78,42 @@ From the project root:
 make
 ```
 
-This compiles:
+This builds the application from:
 
 - `src/main.c`
 - `src/bank.c`
 
-and creates the executable:
+and outputs executable to `bin/`.
 
-- `bin/bank_app`
+## Running
 
-## Run
+Manual compile command (as requested):
 
-From the project root:
+```bash
+gcc src/main.c src/bank.c -o bin/bank_app.exe
+```
+
+Run on Windows PowerShell:
+
+```powershell
+.\bin\bank_app.exe
+```
+
+Run on Git Bash/Linux/macOS (if built without `.exe`):
 
 ```bash
 ./bin/bank_app
 ```
 
-If you are running from Windows PowerShell, you can use:
-
-```powershell
-.\bin\bank_app
-```
-
-## Menu Flow
-
-When the app starts, you get:
-
-1. Create Account
-2. Login
-3. Update Balance
-4. Exit
-
-`Update Balance` verifies username/password first, then asks for an amount to deposit.
-
-## Output Files
-
-- `bank_data.dat`: Binary database created in the project root at runtime
-
-## Clean Build Artifacts
+## Clean
 
 ```bash
 make clean
 ```
 
-This removes the executable from `bin/`.
+## Notes and Limitations
 
-## Notes
-
-- This is a learning-focused console project and does not include encryption/hashing for passwords.
-- Input handling is basic and assumes valid user input types.
-- This project is actively evolving, and more features and improvements will be added over time.
+- Passwords are stored as plain text (no hashing/encryption).
+- Input validation is basic and assumes correct input types.
+- Current balance update flow supports deposit operation.
+- Sorting for account display is implemented using merge sort on the linked list.

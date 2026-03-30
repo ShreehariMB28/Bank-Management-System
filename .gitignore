@@ -1,4 +1,5 @@
 bin/
 build/
 *.dat
-
+*.exe
+*.o
