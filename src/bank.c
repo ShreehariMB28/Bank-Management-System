@@ -1,49 +1,66 @@
 #include "../include/bank.h"
+struct Node* head = NULL;
 
 void create_account() {
     struct Account new_acc;
-    FILE *file = fopen("bank_data.dat", "ab"); // Append binary
+    struct Node* current = head;
+    char input_user[50], input_pass[50];
 
+    int acc_num;
     printf("Enter Account Number: ");
-    scanf("%d", &new_acc.account_number);
+    scanf("%d", &acc_num);
+    while (current != NULL) {
+        if (current->data.account_number == acc_num) {
+            printf("Account number already exists. Please choose a different number.\n");
+            return; // Exit the function to prevent account creation
+        }
+        current = current->next;
+    }
     printf("Enter Username: ");
     scanf("%s", new_acc.username);
     printf("Enter Password: ");
     scanf("%s", new_acc.password);
     new_acc.balance = 0;
+    new_acc.account_number = acc_num;
 
-    fwrite(&new_acc, sizeof(struct Account), 1, file); // Write struct to file
-    fclose(file);
+    struct Node* new_node = (struct Node*)malloc(sizeof(struct Node));
+    new_node->data = new_acc;
+    new_node->next = NULL;
+    if (head == NULL) {
+        head = new_node;
+    } else {
+        current = head;
+    while (current->next != NULL) {
+         current = current->next;
+    }
+    
+    current->next = new_node;}
+
     printf("Account created successfully!\n");
 }
 
 void login() {
-    struct Account acc;
+    
     char input_user[50], input_pass[50];
     int found = 0;
-    FILE *file = fopen("bank_data.dat", "rb"); // Read binary
-
-    if (!file) {
-        printf("No database found.\n");
-        return;
-    }
-
+    struct Node* current = head;
+    
     printf("Username: "); scanf("%s", input_user);
     printf("Password: "); scanf("%s", input_pass);
 
-    while (fread(&acc, sizeof(struct Account), 1, file)) {
-        if ((strcmp(acc.username, input_user) == 0) && (strcmp(acc.password, input_pass) == 0)) {
-            printf("Login successful! Current Balance: Rs.%d\n", acc.balance);
+    while (current != NULL) {
+        if ((strcmp(current->data.username, input_user) == 0) && (strcmp(current->data.password, input_pass) == 0)) {
+            printf("Login successful! Current Balance: Rs.%d\n", current->data.balance);
             found = 1;
             break; // Stop searching once found
         }
+        current = current->next; 
     }
-    fclose(file);
+    
     if (!found) printf("Invalid credentials.\n");
 }
 void verify_balance(){
-    
-    struct Account acc;
+    struct Node* current = head; 
     int found = 0;
     int amount;
     char input_pass[50],input_user[50];
@@ -51,75 +68,188 @@ void verify_balance(){
     scanf("%s", input_user);
     printf("Enter Password: ");
     scanf("%s", input_pass);
-    FILE *file = fopen("bank_data.dat", "rb"); // Read binary
-
-    if (!file) {
-        printf("No database found.\n");
-        return;
-    }
-    while (fread(&acc, sizeof(struct Account), 1, file)) {
-        if ((strcmp(acc.username, input_user) == 0) && (strcmp(acc.password, input_pass) == 0)) {
-            printf("Account Verified\n");
+    while (current!= NULL) {
+        if (strcmp(current->data.username, input_user) == 0 && strcmp(current->data.password, input_pass) == 0) {
+            printf("User Verified\n");
             found = 1;
             break; 
         }
+        current = current->next; 
     }
-    
     if(found){
         printf("Enter Amount: ");
         scanf("%d", &amount);
-        char acnt[50];
-        sprintf(acnt, "%d", acc.account_number);
-        deposite_balance(acnt, amount);
+        deposite_balance(current->data.account_number, amount);
     }
     else{
         printf("Account Not Found\n");
     }  
-    fclose(file);
-  
 }
-void deposite_balance(char acc_num[], int amount){
+void deposite_balance(int acc_num, int amount){
 
-    struct Account acc;
-    char temp[50];
+    struct Node* current = head; 
     int found = 0;
-    FILE *file = fopen("bank_data.dat", "rb+"); 
 
-    if (!file) {
-        printf("No database found.\n");
-        return;
-    }
-    while (fread(&acc, sizeof(struct Account), 1, file)) {
-        sprintf(temp, "%d", acc.account_number);
-        if ((strcmp(temp, acc_num) == 0)) {
+    // Traverse the list until we reach the end
+    while (current!= NULL) {
+        // Check if the current node matches the account number
+        if (current->data.account_number == acc_num) {
             
-            acc.balance=acc.balance+amount;
-            fseek(file, -sizeof(struct Account), SEEK_CUR);
-
-            fwrite(&acc, sizeof(struct Account), 1, file);
-            printf("The new balance is : Rs.%d\n",acc.balance);
+            // Instantly update the balance in RAM
+            current->data.balance += amount; 
+            
+            printf("Deposit successful! The new balance is: Rs.%d\n", current->data.balance);
             found = 1;
-            break; 
+            break; // Stop searching once found
+        }
+        // Move to the next account in the list
+        current = current->next; 
+    }
+
+    if (!found) {
+        printf("Account Not Found\n");
+    }
+
+}
+
+void load_data() {
+    FILE *file = fopen("bank_data.dat", "rb");
+    
+    // If the file doesn't exist yet, just return and start with an empty list
+    if (file == NULL) {
+        return; 
+    }
+
+    struct Account temp_acc;
+    struct Node* tail = NULL; // Keeps track of the last node for fast insertions
+
+    // Read exactly one Account struct at a time. 
+    // This is the safest way to read binary files in C to avoid reading garbage data at the end of a file.
+    while (fread(&temp_acc, sizeof(struct Account), 1, file) == 1) {
+        
+        // 1. Allocate memory on the heap for the new node
+        struct Node* new_node = (struct Node*)malloc(sizeof(struct Node));
+        
+        if (new_node == NULL) {
+            printf("Memory allocation failed!\n");
+            break;
+        }
+
+        // 2. Copy the data we just read from the file into the new node
+        new_node->data = temp_acc;
+        new_node->next = NULL;
+
+        // 3. Attach the node to our Linked List
+        if (head == NULL) {
+            // If the list is empty, this new node becomes the head
+            head = new_node; 
+        } else {
+            // Otherwise, attach it to the end of the list
+            tail->next = new_node; 
+        }
+        
+        // Update the tail to be this new last node
+        tail = new_node; 
+    }
+
+    fclose(file);
+    printf("Database successfully loaded into memory!\n");
+}
+
+// 1. The Merge Function (Translates your 'merge' function)
+// This stitches the two halves back together in sorted order.
+struct Node* sorted_merge(struct Node* a, struct Node* b) {
+    struct Node* result = NULL;
+
+    // Base cases: if one list is empty, return the other
+    if (a == NULL) return b;
+    else if (b == NULL) return a;
+
+    // Pick either 'a' or 'b', and recur. We are sorting by balance here.
+    if (a->data.balance <= b->data.balance) {
+        result = a;
+        result->next = sorted_merge(a->next, b);
+    } else {
+        result = b;
+        result->next = sorted_merge(a, b->next);
+    }
+    return result;
+}
+
+// 2. The Split Function (Translates finding the 'mid' index)
+// Uses the fast/slow pointer strategy to cut the list in half.
+void split_list(struct Node* source, struct Node** frontRef, struct Node** backRef) {
+    struct Node* fast;
+    struct Node* slow;
+    
+    slow = source;
+    fast = source->next;
+
+    // Advance 'fast' two nodes, and advance 'slow' one node
+    while (fast!= NULL) {
+        fast = fast->next;
+        if (fast!= NULL) {
+            slow = slow->next;
+            fast = fast->next;
         }
     }
 
-    fclose(file);
+    // 'slow' is now at the midpoint. 
+    *frontRef = source;
+    *backRef = slow->next;
+    
+    // Break the list in two by setting the midpoint's next to NULL!
+    slow->next = NULL; 
+}
 
+// 3. The Main Sort Function (Translates your 'mergeSort' function)
+void merge_sort(struct Node** headRef) {
+    struct Node* head = *headRef;
+    struct Node* a;
+    struct Node* b;
+
+    // Base case: length 0 or 1 means it's already sorted
+    if ((head == NULL) ||
+        (head->next == NULL)) {
+        return;
+    }
+
+    // Split head into 'a' and 'b' sublists
+    split_list(head, &a, &b);
+
+    // Recursively sort the sublists
+    merge_sort(&a);
+    merge_sort(&b);
+
+    // Merge the two sorted lists together and update the head pointer
+    *headRef = sorted_merge(a, b);
 }
 
 
 
+void save_exit() {
+    FILE *file = fopen("bank_data.dat", "wb"); 
+    
+    if (file == NULL) {
+        printf("Error: Could not save database!\n");
+        exit(1);
+    }
 
+    struct Node* current = head;
+    struct Node* next_node;
 
+    while (current!= NULL) {
+        fwrite(&(current->data), sizeof(struct Account), 1, file); 
+        
+        next_node = current->next;
+        free(current); 
+        current = next_node;
+    }
 
-
-
-
-
-
-
-
-
+    fclose(file);
+    printf("\nAll data successfully saved to disk. Thank you for using the Bank Management System!\n");
+    exit(0);
+}
 
 
 

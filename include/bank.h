@@ -12,10 +12,18 @@ struct Account {
     char password[50];
     int balance;
 };
-
+struct Node {
+    struct Account data;
+    struct Node* next;
+};
 // Declare the functions you will write later
 void create_account();
 void login();
-void deposite_balance(char acc_num[], int amount);
+void deposite_balance(int acc_num, int amount);
 void verify_balance();
+void load_data();
+void save_exit();
+void merge_sort(struct Node** headRef);
+void split_list(struct Node* source, struct Node** frontRef, struct Node** backRef);
+struct Node* sorted_merge(struct Node* a, struct Node* b);
 #endif
