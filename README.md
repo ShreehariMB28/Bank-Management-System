@@ -105,7 +105,7 @@ Run on Git Bash/Linux/macOS (if built without `.exe`):
 ./bin/bank_app
 ```
 
-## Clean
+## Cleana
 
 ```bash
 make clean
