@@ -59,7 +59,7 @@ void login() {
     
     if (!found) printf("Invalid credentials.\n");
 }
-void verify_balance(){
+void deposit_money(){
     struct Node* current = head; 
     int found = 0;
     int amount;
@@ -72,45 +72,47 @@ void verify_balance(){
         if (strcmp(current->data.username, input_user) == 0 && strcmp(current->data.password, input_pass) == 0) {
             printf("User Verified\n");
             found = 1;
-            break; 
+            
+            printf("Enter the amount you want to Deposit\n");
+            scanf("%d",&amount);
+            current->data.balance += amount; 
+            printf("Deposit successful! The new balance is: Rs.%d\n", current->data.balance);
+            return; 
         }
         current = current->next; 
     }
-    if(found){
-        printf("Enter Amount: ");
-        scanf("%d", &amount);
-        deposite_balance(current->data.account_number, amount);
-    }
-    else{
-        printf("Account Not Found\n");
+     printf("Account Not Found\n");
+    
     }  
-}
-void deposite_balance(int acc_num, int amount){
-
+void withdraw_money(){
     struct Node* current = head; 
     int found = 0;
-
-    // Traverse the list until we reach the end
+    int amount;
+    char input_pass[50],input_user[50];
+    printf("Enter Username: ");
+    scanf("%s", input_user);
+    printf("Enter Password: ");
+    scanf("%s", input_pass);
     while (current!= NULL) {
-        // Check if the current node matches the account number
-        if (current->data.account_number == acc_num) {
-            
-            // Instantly update the balance in RAM
-            current->data.balance += amount; 
-            
-            printf("Deposit successful! The new balance is: Rs.%d\n", current->data.balance);
+        if (strcmp(current->data.username, input_user) == 0 && strcmp(current->data.password, input_pass) == 0) {
+            printf("User Verified\n");
             found = 1;
-            break; // Stop searching once found
+            
+            printf("Enter the amount you want to Withdraw\n");
+            scanf("%d",&amount);
+            if(amount > current->data.balance){
+                printf("Balance is less than the amount asked to Withdraw\n");
+                return;
+            }
+            current->data.balance -= amount; 
+            printf("Deposit successful! The new balance is: Rs.%d\n", current->data.balance);
+            return; 
         }
-        // Move to the next account in the list
         current = current->next; 
     }
-
-    if (!found) {
-        printf("Account Not Found\n");
-    }
-
-}
+     printf("Account Not Found\n");
+    
+    }  
 
 void load_data() {
     FILE *file = fopen("bank_data.dat", "rb");

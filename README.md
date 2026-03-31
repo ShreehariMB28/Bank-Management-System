@@ -1,19 +1,30 @@
 # Bank Management System in C
 
-A console-based bank management application built in C using modular files, linked-list storage in memory, and binary file persistence on disk.
+A console-based bank management application written in C with linked-list account storage in memory and binary persistence on disk.
 
 ## Overview
 
-This project manages bank accounts with a simple menu-driven interface. Account data is loaded from a binary file at startup, stored in a linked list during runtime, and written back to disk when exiting.
+At startup, the app loads account records from `bank_data.dat` into a linked list. During execution, all operations happen in memory. On exit, records are written back to disk and allocated nodes are freed.
 
-## Features
+## Current Features
 
-- Create new account with unique account number validation
-- Login/check balance using username and password
-- Verify user credentials before allowing balance update
-- Deposit money into an account
+- Create account with duplicate account number check
+- Login-based balance check using username and password
+- Deposit money after credential verification
+- Withdraw money with insufficient-balance validation
 - Display all accounts sorted by balance (ascending)
-- Persistent storage using a binary data file (`bank_data.dat`)
+- Persist all accounts to a binary file between runs
+
+## Change Notes (Based on Current Code)
+
+The following points reflect what is currently implemented across `src/main.c`, `src/bank.c`, and `include/bank.h`:
+
+- Menu now has 6 options, including separate Deposit and Withdraw flows
+- Withdraw flow exists and checks requested amount against balance
+- Balance check is handled through `login()`
+- Account display is sorted using linked-list merge sort before printing
+- Data file persistence uses `load_data()` and `save_exit()` with `fread` and `fwrite`
+- Project ignores generated files and folders via `.gitignore` (`bin/`, `build/`, `*.dat`, `*.exe`, `*.o`)
 
 ## Project Structure
 
@@ -31,14 +42,7 @@ bank-system/
 `-- build/
 ```
 
-## Tech Details
-
-- Language: C
-- Build tool: Make + GCC
-- Data structure: Singly linked list (`struct Node`)
-- Persistence: Binary file read/write with `fread` and `fwrite`
-
-## Account Model
+## Data Model
 
 ```c
 struct Account {
@@ -49,71 +53,67 @@ struct Account {
 };
 ```
 
-## Menu Options
+Accounts are stored in a singly linked list using `struct Node`.
 
-When you run the app, the menu is:
+## Runtime Menu
 
 1. Create Account
 2. Check Balance
-3. Update Balance
-4. Display All Accounts
-5. Exit
+3. Deposit Money
+4. Withdraw Money
+5. Display All Accounts
+6. Exit
 
-## Data File
-
-- `bank_data.dat` is created in the project root.
-- `load_data()` reads all saved accounts into memory at startup.
-- `save_exit()` writes accounts to disk and frees allocated linked-list memory before exiting.
+## Build and Run
 
 ## Prerequisites
 
-- GCC (MinGW/MSYS2 on Windows, or GCC on Linux/macOS)
+- GCC
 - Make
 
-## Build
-
-From the project root:
+## Build with Makefile
 
 ```bash
 make
 ```
 
-This builds the application from:
+Current Makefile output target:
 
-- `src/main.c`
-- `src/bank.c`
+- `bin/bank_app`
 
-and outputs executable to `bin/`.
-
-## Running
-
-Manual compile command (as requested):
+## Manual Build (Windows)
 
 ```bash
 gcc src/main.c src/bank.c -o bin/bank_app.exe
 ```
 
-Run on Windows PowerShell:
+## Run (PowerShell)
 
 ```powershell
 .\bin\bank_app.exe
 ```
 
-Run on Git Bash/Linux/macOS (if built without `.exe`):
+## Run (Git Bash/Linux/macOS)
 
 ```bash
 ./bin/bank_app
 ```
 
-## Cleana
+## Clean
 
 ```bash
 make clean
 ```
 
-## Notes and Limitations
+## Data Persistence
 
-- Passwords are stored as plain text (no hashing/encryption).
-- Input validation is basic and assumes correct input types.
-- Current balance update flow supports deposit operation.
-- Sorting for account display is implemented using merge sort on the linked list.
+- File: `bank_data.dat` in project root
+- Startup: `load_data()` loads all saved records into memory
+- Exit: `save_exit()` writes all records to disk, frees memory, then exits
+
+## Limitations
+
+- Passwords are stored as plain text
+- Input handling assumes correct input types
+- No account deletion or update-profile flow
+- No transaction history or audit log

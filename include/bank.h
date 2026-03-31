@@ -18,13 +18,12 @@ struct Node {
 };
 // Declare the functions you will write later
 void create_account();
-void login();
-void deposite_balance(int acc_num, int amount);
-void verify_balance();
 void load_data();
 void save_exit();
 void merge_sort(struct Node** headRef);
 void split_list(struct Node* source, struct Node** frontRef, struct Node** backRef);
+void deposit_money();
+void withdraw_money();
 struct Node* sorted_merge(struct Node* a, struct Node* b);
 void display_all_accounts();
 #endif
