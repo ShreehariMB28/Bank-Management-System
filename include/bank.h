@@ -18,6 +18,7 @@ struct Node {
 };
 // Declare the functions you will write later
 void create_account();
+void login();
 void load_data();
 void save_exit();
 void merge_sort(struct Node** headRef);
