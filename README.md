@@ -1,46 +1,64 @@
-# Bank Management System in C
+# 🏦 Bank Management System
 
-A console-based bank management application written in C with linked-list account storage in memory and binary persistence on disk.
+A console-based bank management application written in **C**, using a **linked-list** data structure for in-memory account storage and **binary file** persistence on disk.
+
+---
+
+## 📋 Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Project Structure](#project-structure)
+- [Data Model](#data-model)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Build](#build)
+  - [Run](#run)
+  - [Clean](#clean)
+- [Usage](#usage)
+- [Data Persistence](#data-persistence)
+- [Tech Stack](#tech-stack)
+- [Limitations](#limitations)
+- [License](#license)
+
+---
 
 ## Overview
 
-At startup, the app loads account records from `bank_data.dat` into a linked list. During execution, all operations happen in memory. On exit, records are written back to disk and allocated nodes are freed.
+The system loads account records from `bank_data.dat` into a singly linked list at startup. All operations — account creation, login, deposits, withdrawals, and display — are performed on the in-memory list. When the user exits, every record is written back to the binary file and all allocated memory is freed.
 
-## Current Features
+---
 
-- Create account with duplicate account number check
-- Login-based balance check using username and password
-- Deposit money after credential verification
-- Withdraw money with insufficient-balance validation
-- Display all accounts sorted by balance (ascending)
-- Persist all accounts to a binary file between runs
+## Features
 
-## Change Notes (Based on Current Code)
+| # | Feature | Description |
+|---|---------|-------------|
+| 1 | **Create Account** | Register a new account with a unique account number, username, and password |
+| 2 | **Check Balance** | Log in with credentials to view the current balance |
+| 3 | **Deposit Money** | Add funds to an account after credential verification |
+| 4 | **Withdraw Money** | Withdraw funds with insufficient-balance validation |
+| 5 | **Display All Accounts** | View every account sorted by balance (ascending) using merge sort |
+| 6 | **Data Persistence** | Automatically save and load accounts from a binary file between sessions |
 
-The following points reflect what is currently implemented across `src/main.c`, `src/bank.c`, and `include/bank.h`:
-
-- Menu now has 6 options, including separate Deposit and Withdraw flows
-- Withdraw flow exists and checks requested amount against balance
-- Balance check is handled through `login()`
-- Account display is sorted using linked-list merge sort before printing
-- Data file persistence uses `load_data()` and `save_exit()` with `fread` and `fwrite`
-- Project ignores generated files and folders via `.gitignore` (`bin/`, `build/`, `*.dat`, `*.exe`, `*.o`)
+---
 
 ## Project Structure
 
-```text
-bank-system/
-|-- Makefile
-|-- README.md
-|-- .gitignore
-|-- include/
-|   `-- bank.h
-|-- src/
-|   |-- main.c
-|   `-- bank.c
-|-- bin/
-`-- build/
 ```
+bank-system/
+├── Makefile            # Build automation
+├── README.md
+├── .gitignore
+├── include/
+│   └── bank.h          # Header — structs & function declarations
+├── src/
+│   ├── main.c          # Entry point & menu loop
+│   └── bank.c          # Core logic (CRUD, sorting, file I/O)
+├── bin/                # Compiled binary output (git-ignored)
+└── build/              # Intermediate build files (git-ignored)
+```
+
+---
 
 ## Data Model
 
@@ -53,67 +71,105 @@ struct Account {
 };
 ```
 
-Accounts are stored in a singly linked list using `struct Node`.
+Accounts are stored in a **singly linked list** (`struct Node`) for dynamic, heap-based management.
 
-## Runtime Menu
+---
 
+## Getting Started
+
+### Prerequisites
+
+- **GCC** (MinGW on Windows, or any standard C compiler)
+- **Make** (optional — you can compile manually)
+
+### Build
+
+**Using Make:**
+
+```bash
+make
+```
+
+This compiles `src/main.c` and `src/bank.c` and outputs the binary to `bin/bank_app`.
+
+**Manual compilation (Windows):**
+
+```bash
+gcc -Wall src/main.c src/bank.c -o bin/bank_app.exe
+```
+
+### Run
+
+**PowerShell / CMD:**
+
+```powershell
+.\bin\bank_app.exe
+```
+
+**Git Bash / Linux / macOS:**
+
+```bash
+./bin/bank_app
+```
+
+### Clean
+
+```bash
+make clean
+```
+
+---
+
+## Usage
+
+On launch you'll see the interactive menu:
+
+```
+=== Bank Management System ===
 1. Create Account
 2. Check Balance
 3. Deposit Money
 4. Withdraw Money
 5. Display All Accounts
 6. Exit
-
-## Build and Run
-
-## Prerequisites
-
-- GCC
-- Make
-
-## Build with Makefile
-
-```bash
-make
+Choose an option:
 ```
 
-Current Makefile output target:
+Select an option by entering its number. Follow the on-screen prompts for each operation.
 
-- `bin/bank_app`
-
-## Manual Build (Windows)
-
-```bash
-gcc src/main.c src/bank.c -o bin/bank_app.exe
-```
-
-## Run (PowerShell)
-
-```powershell
-.\bin\bank_app.exe
-```
-
-## Run (Git Bash/Linux/macOS)
-
-```bash
-./bin/bank_app
-```
-
-## Clean
-
-```bash
-make clean
-```
+---
 
 ## Data Persistence
 
-- File: `bank_data.dat` in project root
-- Startup: `load_data()` loads all saved records into memory
-- Exit: `save_exit()` writes all records to disk, frees memory, then exits
+| Event | Action |
+|-------|--------|
+| **Startup** | `load_data()` reads `bank_data.dat` and builds the linked list |
+| **Exit (option 6)** | `save_exit()` writes all accounts back to `bank_data.dat`, frees memory, and terminates |
+
+> The data file is created automatically on first exit if it doesn't already exist.
+
+---
+
+## Tech Stack
+
+- **Language:** C (C99)
+- **Data Structure:** Singly Linked List
+- **Sorting Algorithm:** Merge Sort (linked-list variant with fast/slow pointer split)
+- **File I/O:** Binary read/write (`fread` / `fwrite`)
+- **Build Tool:** GNU Make
+
+---
 
 ## Limitations
 
-- Passwords are stored as plain text
-- Input handling assumes correct input types
-- No account deletion or update-profile flow
-- No transaction history or audit log
+- Passwords are stored in **plain text** (no hashing or encryption)
+- Input handling assumes correct data types (no robust input validation)
+- No account deletion or profile-update functionality
+- No transaction history or audit logging
+- Single-user console application (no concurrency)
+
+---
+
+## License
+
+This project is open-source and available for educational purposes.
