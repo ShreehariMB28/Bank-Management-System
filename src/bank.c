@@ -301,10 +301,4 @@ void delete_account(){
     }
     
     if (!found) printf("Invalid credentials.\n");
-
-
-
-
-
-
 }

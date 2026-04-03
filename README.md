@@ -38,7 +38,8 @@ The system loads account records from `bank_data.dat` into a singly linked list 
 | 3 | **Deposit Money** | Add funds to an account after credential verification |
 | 4 | **Withdraw Money** | Withdraw funds with insufficient-balance validation |
 | 5 | **Display All Accounts** | View every account sorted by balance (ascending) using merge sort |
-| 6 | **Data Persistence** | Automatically save and load accounts from a binary file between sessions |
+| 6 | **Delete Account** | Remove an account after credential verification |
+| 7 | **Data Persistence** | Automatically save and load accounts from a binary file between sessions |
 
 ---
 
@@ -131,7 +132,8 @@ On launch you'll see the interactive menu:
 3. Deposit Money
 4. Withdraw Money
 5. Display All Accounts
-6. Exit
+6. Delete Account
+7. Exit
 Choose an option:
 ```
 
@@ -164,7 +166,7 @@ Select an option by entering its number. Follow the on-screen prompts for each o
 
 - Passwords are stored in **plain text** (no hashing or encryption)
 - Input handling assumes correct data types (no robust input validation)
-- No account deletion or profile-update functionality
+- No profile-update functionality
 - No transaction history or audit logging
 - Single-user console application (no concurrency)
 
