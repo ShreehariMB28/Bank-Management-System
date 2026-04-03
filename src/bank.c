@@ -274,4 +274,37 @@ void display_all_accounts(){
 }
 
 
+void delete_account(){
 
+    char input_user[50], input_pass[50];
+    int found = 0;
+    struct Node* current = head;
+    struct Node* prev = head;
+    
+    printf("Username: "); scanf("%s", input_user);
+    printf("Password: "); scanf("%s", input_pass);
+
+    while (current != NULL) {
+        if ((strcmp(current->data.username, input_user) == 0) && (strcmp(current->data.password, input_pass) == 0)) {
+            printf("Account Found and Deleted\n");
+            found = 1;
+            if (current == head) {
+                head = current->next;
+            } else {
+                prev->next = current->next;
+            }
+            free(current);
+            break; // Stop searching once found
+        }
+        prev = current;
+        current = current->next; 
+    }
+    
+    if (!found) printf("Invalid credentials.\n");
+
+
+
+
+
+
+}
