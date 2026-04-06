@@ -227,8 +227,6 @@ void merge_sort(struct Node** headRef) {
     *headRef = sorted_merge(a, b);
 }
 
-
-
 void save_exit() {
     FILE *file = fopen("bank_data.dat", "wb"); 
     
@@ -253,7 +251,6 @@ void save_exit() {
     exit(0);
 }
 
-
 void display_all_accounts(){
     if (head == NULL) {
         printf("No accounts found in the bank.\n");
@@ -272,7 +269,6 @@ void display_all_accounts(){
     }
     printf("---------------------------------------------\n");
 }
-
 
 void delete_account(){
 
@@ -299,6 +295,5 @@ void delete_account(){
         prev = current;
         current = current->next; 
     }
-    
     if (!found) printf("Invalid credentials.\n");
 }
