@@ -18,6 +18,7 @@ A console-based bank management application written in **C**, using a **linked-l
 - [Usage](#usage)
 - [Data Persistence](#data-persistence)
 - [Tech Stack](#tech-stack)
+- [Code Documentation](#code-documentation)
 - [Limitations](#limitations)
 - [License](#license)
 
@@ -146,7 +147,7 @@ Select an option by entering its number. Follow the on-screen prompts for each o
 | Event | Action |
 |-------|--------|
 | **Startup** | `load_data()` reads `bank_data.dat` and builds the linked list |
-| **Exit (option 6)** | `save_exit()` writes all accounts back to `bank_data.dat`, frees memory, and terminates |
+| **Exit (option 7)** | `save_exit()` writes all accounts back to `bank_data.dat`, frees memory, and terminates |
 
 > The data file is created automatically on first exit if it doesn't already exist.
 
@@ -159,6 +160,18 @@ Select an option by entering its number. Follow the on-screen prompts for each o
 - **Sorting Algorithm:** Merge Sort (linked-list variant with fast/slow pointer split)
 - **File I/O:** Binary read/write (`fread` / `fwrite`)
 - **Build Tool:** GNU Make
+
+---
+
+## Code Documentation
+
+All source files are thoroughly documented with **Doxygen-style comments**:
+
+| File | Documentation |
+|------|---------------|
+| `include/bank.h` | `@file` / `@struct` / `@brief` docstrings for every struct and function declaration, with `@param` and `@return` tags |
+| `src/bank.c` | File-level overview, section dividers (Account Operations, Data Persistence, Merge Sort, Display), full function docstrings, and step-by-step inline comments |
+| `src/main.c` | File-level docstring, inline comments explaining the menu loop and each case branch |
 
 ---
 
