@@ -136,5 +136,5 @@ void withdraw_money();
  * prints every account's number, username, and balance.
  */
 void display_all_accounts();
-
+void hash_password(const char* password, char* output);
 #endif

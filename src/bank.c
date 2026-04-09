@@ -37,7 +37,7 @@ struct Node* head = NULL;
 void create_account() {
     struct Account new_acc;
     struct Node* current = head;
-    char input_user[50], input_pass[50];
+    char input_pass[50];
 
     /* --- Step 1: Get and validate the account number --- */
     int acc_num;
@@ -57,8 +57,8 @@ void create_account() {
     printf("Enter Username: ");
     scanf("%s", new_acc.username);
     printf("Enter Password: ");
-    scanf("%s", new_acc.password);
-
+    scanf("%s", input_pass);
+    hash_password(input_pass, new_acc.password);
     new_acc.balance = 0;           /* New accounts start with zero balance */
     new_acc.account_number = acc_num;
 
@@ -90,18 +90,20 @@ void create_account() {
  * both match the user's input. Prints the balance on success.
  */
 void login() {
-    char input_user[50], input_pass[50];
+    char input_user[50], input_pass[50],hashed_pass[50];
     int found = 0;
     struct Node* current = head;
 
     /* Prompt for credentials */
     printf("Username: "); scanf("%s", input_user);
     printf("Password: "); scanf("%s", input_pass);
+    
+    hash_password(input_pass,hashed_pass );
 
     /* Search the list for a matching account */
     while (current != NULL) {
         if ((strcmp(current->data.username, input_user) == 0) &&
-            (strcmp(current->data.password, input_pass) == 0)) {
+            (strcmp(current->data.password, hashed_pass) == 0)) {
             printf("Login successful! Current Balance: Rs.%d\n", current->data.balance);
             found = 1;
             break;  /* Match found — stop searching */
@@ -125,7 +127,7 @@ void deposit_money() {
     struct Node* current = head;
     int found = 0;
     int amount;
-    char input_pass[50], input_user[50];
+    char input_pass[50], input_user[50],hashed_pass[50];
 
     /* Prompt for credentials */
     printf("Enter Username: ");
@@ -133,10 +135,12 @@ void deposit_money() {
     printf("Enter Password: ");
     scanf("%s", input_pass);
 
+    hash_password(input_pass,hashed_pass );
+
     /* Search for the matching account */
     while (current != NULL) {
         if (strcmp(current->data.username, input_user) == 0 &&
-            strcmp(current->data.password, input_pass) == 0) {
+            strcmp(current->data.password, hashed_pass) == 0) {
             printf("User Verified\n");
             found = 1;
 
@@ -167,7 +171,7 @@ void withdraw_money() {
     struct Node* current = head;
     int found = 0;
     int amount;
-    char input_pass[50], input_user[50];
+    char input_pass[50], input_user[50],hashed_pass[50];
 
     /* Prompt for credentials */
     printf("Enter Username: ");
@@ -175,10 +179,12 @@ void withdraw_money() {
     printf("Enter Password: ");
     scanf("%s", input_pass);
 
+    hash_password(input_pass,hashed_pass );
+
     /* Search for the matching account */
     while (current != NULL) {
         if (strcmp(current->data.username, input_user) == 0 &&
-            strcmp(current->data.password, input_pass) == 0) {
+            strcmp(current->data.password, hashed_pass) == 0) {
             printf("User Verified\n");
             found = 1;
 
@@ -213,7 +219,7 @@ void withdraw_money() {
  * Frees the memory of the removed node.
  */
 void delete_account() {
-    char input_user[50], input_pass[50];
+    char input_user[50], input_pass[50],hashed_pass[50];
     int found = 0;
     struct Node* current = head;
     struct Node* prev = head;  /* Trails one step behind 'current' */
@@ -222,10 +228,11 @@ void delete_account() {
     printf("Username: "); scanf("%s", input_user);
     printf("Password: "); scanf("%s", input_pass);
 
+    hash_password(input_pass,hashed_pass );
     /* Traverse the list looking for a matching account */
     while (current != NULL) {
         if ((strcmp(current->data.username, input_user) == 0) &&
-            (strcmp(current->data.password, input_pass) == 0)) {
+            (strcmp(current->data.password, hashed_pass) == 0)) {
             printf("Account Found and Deleted\n");
             found = 1;
 
@@ -464,3 +471,24 @@ void display_all_accounts() {
     }
     printf("---------------------------------------------\n");
 }
+
+void hash_password(const char* password, char* output) {
+    unsigned long hash = 5381;
+    int c;
+
+    while ((c = *password++)) {
+        hash = ((hash << 5) + hash) + c;  // hash * 33 + c
+    }
+
+    sprintf(output, "%lx", hash);  // store as hex string
+}
+
+
+
+
+
+
+
+
+
+
