@@ -1,6 +1,6 @@
 # 🏦 Bank Management System
 
-A console-based bank management application written in **C**, using a **linked-list** data structure for in-memory account storage and **binary file** persistence on disk.
+A console-based bank management application written in **C**, using a **linked-list** data structure for in-memory account storage, **djb2 password hashing** for credential security, and **binary file** persistence on disk.
 
 ---
 
@@ -17,6 +17,7 @@ A console-based bank management application written in **C**, using a **linked-l
   - [Clean](#clean)
 - [Usage](#usage)
 - [Data Persistence](#data-persistence)
+- [Security](#security)
 - [Tech Stack](#tech-stack)
 - [Code Documentation](#code-documentation)
 - [Limitations](#limitations)
@@ -41,6 +42,7 @@ The system loads account records from `bank_data.dat` into a singly linked list 
 | 5 | **Display All Accounts** | View every account sorted by balance (ascending) using merge sort |
 | 6 | **Delete Account** | Remove an account after credential verification |
 | 7 | **Data Persistence** | Automatically save and load accounts from a binary file between sessions |
+| 8 | **Password Hashing** | Passwords are hashed using the djb2 algorithm before storage — plaintext passwords are never saved |
 
 ---
 
@@ -68,7 +70,7 @@ bank-system/
 struct Account {
     int account_number;
     char username[50];
-    char password[50];
+    char password[50];    /* Stored as a djb2 hex hash, never plaintext */
     int balance;
 };
 ```
@@ -153,11 +155,36 @@ Select an option by entering its number. Follow the on-screen prompts for each o
 
 ---
 
+## Security
+
+Passwords are **never stored in plaintext**. The system uses the **djb2 hash algorithm** (by Daniel J. Bernstein) to convert passwords into fixed-length hexadecimal strings before saving them to disk.
+
+| Step | What happens |
+|------|--------------|
+| **Account Creation** | The user's password is hashed via `hash_password()` and only the hash is stored in the `Account` struct |
+| **Login / Verification** | The entered password is hashed on the fly and compared against the stored hash |
+
+```c
+// Example: "mypass123" → "7c9e6816e7a5"
+void hash_password(const char* password, char* output) {
+    unsigned long hash = 5381;
+    int c;
+    while ((c = *password++))
+        hash = ((hash << 5) + hash) + c;  // hash * 33 + c
+    sprintf(output, "%lx", hash);
+}
+```
+
+> **Note:** djb2 is a fast, well-distributed hash suitable for educational purposes. Production systems should use cryptographic hashes like bcrypt or Argon2.
+
+---
+
 ## Tech Stack
 
 - **Language:** C (C99)
 - **Data Structure:** Singly Linked List
 - **Sorting Algorithm:** Merge Sort (linked-list variant with fast/slow pointer split)
+- **Hashing:** djb2 (password hashing with hex-encoded output)
 - **File I/O:** Binary read/write (`fread` / `fwrite`)
 - **Build Tool:** GNU Make
 
@@ -177,7 +204,7 @@ All source files are thoroughly documented with **Doxygen-style comments**:
 
 ## Limitations
 
-- Passwords are stored in **plain text** (no hashing or encryption)
+- djb2 is not a cryptographic hash — a production system should use bcrypt, scrypt, or Argon2 with salting
 - Input handling assumes correct data types (no robust input validation)
 - No profile-update functionality
 - No transaction history or audit logging
