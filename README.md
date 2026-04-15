@@ -112,11 +112,11 @@ flowchart TD
     N --> O["Free All Memory<br/>& Close Application"]
     O --> P["🏁 END"]
     
-    style A fill:#90EE90
-    style P fill:#FFB6C1
-    style J fill:#FFE4B5
-    style N fill:#87CEEB
-    style H fill:#DDA0DD
+    style A fill:#02075d
+    style P fill:#00493e
+    style J fill:#001b4a
+    style N fill:#080808
+    style H fill:#be0032
 ```
 
 ---
