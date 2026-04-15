@@ -10,6 +10,7 @@ A console-based bank management application written in **C**, using a **linked-l
 - [Features](#features)
 - [Project Structure](#project-structure)
 - [Data Model](#data-model)
+- [Application Flow](#application-flow)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Build](#build)
@@ -76,6 +77,47 @@ struct Account {
 ```
 
 Accounts are stored in a **singly linked list** (`struct Node`) for dynamic, heap-based management.
+
+---
+
+## Application Flow
+
+```mermaid
+flowchart TD
+    A["🏦 START<br/>Load Data from bank_data.dat"] --> B["Display Main Menu"]
+    B --> C{"User Choice"}
+    
+    C -->|1| D["Create Account<br/>- Input account number<br/>- Input username & password<br/>- Set balance = 0"]
+    C -->|2| E["Login<br/>- Verify credentials<br/>- Show Balance"]
+    C -->|3| F["Deposit Money<br/>- Login to account<br/>- Enter amount<br/>- Update balance"]
+    C -->|4| G["Withdraw Money<br/>- Login to account<br/>- Verify sufficient balance<br/>- Update balance"]
+    C -->|5| H["Display All Accounts<br/>- Merge sort by balance<br/>- Show all accounts"]
+    C -->|6| I["Delete Account<br/>- Login to account<br/>- Remove from list"]
+    C -->|7| J["Exit Application"]
+    
+    D --> K{Valid Operation?}
+    E --> K
+    F --> K
+    G --> K
+    H --> K
+    I --> K
+    
+    K -->|Yes| L["Update In-Memory<br/>Linked List"]
+    K -->|No| M["Display Error<br/>Message"]
+    
+    L --> B
+    M --> B
+    
+    J --> N["Save All Accounts<br/>to bank_data.dat"]
+    N --> O["Free All Memory<br/>& Close Application"]
+    O --> P["🏁 END"]
+    
+    style A fill:#90EE90
+    style P fill:#FFB6C1
+    style J fill:#FFE4B5
+    style N fill:#87CEEB
+    style H fill:#DDA0DD
+```
 
 ---
 
